@@ -6,12 +6,8 @@ from scipy.io import arff
 import numpy as np
 
 import os
-try:
-    import clip
-except ImportError: 
-    enable_clip = False
-else:
-    enable_clip = True
+import clip
+
 import torch
 
 from torch.utils.data import DataLoader, Subset
@@ -165,7 +161,7 @@ def get_iris():
     return _data, _clustering_true
 
 def get_pathbased_and_r15(path_to_arff):
-    """A local copy is needed for these datasets. A download is available at https://github.com/deric/clustering-benchmark"""
+    """A local copy is needed for these datasets"""
     raw_data, _ = arff.loadarff(path_to_arff)
 
     _data = np.stack([raw_data['x'],raw_data['y']], axis=-1)
@@ -174,7 +170,7 @@ def get_pathbased_and_r15(path_to_arff):
     return _data, _clustering_true
 
 def get_ecoli(path_to_arff):
-    """A local copy is needed for these datasets. A download is available at https://github.com/deric/clustering-benchmark"""
+    """A local copy is needed for this dataset"""
     raw_data, _ = arff.loadarff(path_to_arff)
 
     _, indices, counts = np.unique(raw_data['class'], return_counts=True, return_inverse=True)
@@ -193,17 +189,11 @@ def load_by_name(dataset_name, path = None):
     if dataset_name == '20newsgroups':
         return get_20newsgroups()
     elif dataset_name == 'cifar10':
-        if not enable_clip:
-            raise ValueError("CLIP is required for CIFAR10. Please install CLIP from the OpenAI repository (https://github.com/openai/CLIP).")
         return get_cifar10()
     elif dataset_name == 'mnist':
-        if not enable_clip:
-            raise ValueError("CLIP is required for MNIST. Please install CLIP from the OpenAI repository (https://github.com/openai/CLIP).")
         return get_mnist()
     elif dataset_name == 'caltech':
         assert path is not None, "Path to Caltech dataset is required"
-        if not enable_clip:
-            raise ValueError("CLIP is required for Caltech. Please install CLIP from the OpenAI repository (https://github.com/openai/CLIP).")
         return get_caltech(path)
     elif dataset_name == 'beans':
         return get_beans()
