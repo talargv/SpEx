@@ -37,7 +37,9 @@ class CARTBased(CliqueBased):
         vol_left = (size_left**2 - left_side_sum_squares)
         vol_right = ((size_v - size_left)**2 - right_side_sum_squares)
 
-        return ((vol_left/size_left) + (vol_right/(size_v - size_left))) / size_v
+        with np.errstate(divide='ignore', invalid='ignore'):
+            res = ((vol_left/size_left) + (vol_right/(size_v - size_left))) / size_v
+        return res
 
     def train_metric(self, cond, clustering, current_data, global_counts):
         local_counts = self.get_local_counts(clustering, current_data, global_counts.size)

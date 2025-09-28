@@ -104,9 +104,6 @@ class RefMixin():
     
 class GraphMixin():
     def best_data_point(self, metric: np.ndarray, inner_data: np.ndarray) -> int:
-        # assert metric.size == inner_data.size
-        # if not (np.isfinite(metric[:-1])).all():
-        #     print(f"WARNING: {metric}")
         return np.argmin(np.where(
             (inner_data[:-1] < inner_data[1:]) # Cannot split two points with the same value.
              & np.isfinite(metric[:-1]),
