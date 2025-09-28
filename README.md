@@ -4,6 +4,10 @@ This is the official repository for the paper SpEx: A Spectral Approach to Expla
 
 This repository provides implementations for our main algorithm - SpEx, for general reference graphs, with an efficient implementation for the special case of a clique graph (the edge set is the set of cliques of equally-labeled data points, as set by a reference clustering), alongside IMM, EMN and an adapted version of CART discussed in the paper. 
 
+## Installation
+
+The code requires external repositories to run fully, namely CLIP to process some of the datasets and ExKMC for the relevant experiment. It is advised to use the `Makefile` file to install all required dependencies. For the main experiment for the smaller datasets, downloading the requirements listed in the `requirements.txt` is enough.
+
 ## Basic Usage
 
 All of the mentioned algorithms share a common interface - `Tree`, provided with a `train` function to build an explainable tree based on a refernce and a `predict` function to cluster input data. For all algorithms, the prediction method requires a dataset in the form of a numpy array of shape (number of samples, dimension of samples). The train function however, is algorithm specific. 
@@ -84,13 +88,7 @@ To reproduce our results, use the provided Jupyter notebooks - `main_experiments
 
 ### Dataset availablility 
 
-Note that some of the datasets used in the paper require a local copy of the dataset, namely "pathbased", "R15" and "ecoli". To download the datasets, we recommend a [repository of clustering benchmarks](https://github.com/deric/clustering-benchmark)
-
-### ExKMC 
-
-The ExKMC code is available at the paper's [official repository](https://github.com/navefr/ExKMC). If you run with installation issues, clone the repository and run:
-
-`python path/to/repository/setup.py build_ext --inplace --cython`
+Note that some of the datasets used in the paper require a local copy of the dataset, namely "pathbased", "R15" and "ecoli".
 
 ### Kernel IMM
 
