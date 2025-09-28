@@ -39,7 +39,9 @@ class CliqueBased(_Base_ExplainableTree, RefMixin, GraphMixin):
         cut_left = cum_glob_counts - 2*left_side - coeff
         cut_right = cut_left[-1] + 2*(cum_loc_counts - left_side) - cum_glob_counts - coeff
 
-        return (cut_left / deg_left) + (cut_right / deg_right)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            res = (cut_left / deg_left) + (cut_right / deg_right)
+        return res
 
     def single_partition(self, data: np.ndarray, clustering: np.ndarray, current_data: np.ndarray, global_counts: np.ndarray) -> tuple[float, int, float]:
         best_cond, best_index, best_threshold = np.inf, 0, -np.inf 

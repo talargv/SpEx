@@ -3,7 +3,6 @@ from base_classes import _Base_ExplainableTree, GraphMixin, CutComp, Cut
 import numpy as np
 import heapq
 import scipy.sparse as sprs
-from abc import ABC, abstractmethod
 
 class GraphBased(_Base_ExplainableTree, GraphMixin):
     """
@@ -18,28 +17,15 @@ class GraphBased(_Base_ExplainableTree, GraphMixin):
         total_deg = total_deg_left[-1]
         inner_right_neighbors, inner_left_neighbors, total_inner_deg = self.get_inner_neighbors(graph, data_ordering)
 
-        return (2*inner_right_neighbors - total_inner_deg) / (total_deg - total_deg_left) - 2*(inner_left_neighbors / total_deg_left)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            res = (2*inner_right_neighbors - total_inner_deg) / (total_deg - total_deg_left) - 2*(inner_left_neighbors / total_deg_left)
+        return res
     
     def train_metric(self, cond, graph, current_data):
         ncut = 1 - (graph[np.ix_(current_data, current_data)].sum() / graph[current_data, :].sum())
         return cond - ncut
 
     def get_inner_neighbors(self, graph: sprs.csr_matrix, data_ordering: np.ndarray) -> tuple[np.ndarray, np.ndarray, int]:
-        """
-        Computes (twice the) degree of each (sub)subgraph resulted by splitting a subgraph on a data point. 
-
-        Args:
-            graph: sprs.csr_matrix
-                The full adjacency matrix of the graph.
-            data_ordering: np.ndarray
-                The indices of the nodes in the subgraph.
-
-        Returns:
-            tuple[np.ndarray, np.ndarray, int]
-                Twice the degree of each (sub)subgraph, and the total degree of the subgraph.
-
-        TODO: Is this docstring correct?
-        """
         inner_graph = graph[np.ix_(data_ordering, data_ordering)]
         upper = sprs.triu(inner_graph)
         lower = upper.T
@@ -49,25 +35,6 @@ class GraphBased(_Base_ExplainableTree, GraphMixin):
         return inner_right_neighbors, inner_left_neighbors ,inner_right_neighbors[-1] + inner_left_neighbors[-1]
 
     def single_partition(self, data: np.ndarray, graph: sprs.csr_matrix, current_data: np.ndarray, total_deg_vector: np.ndarray) -> tuple[float, int, float]:
-        """
-        Finds the best split for some subset of the data.
-
-        Args:
-            data: np.ndarray
-                The full dataset.
-                Dimensions should be (num samples, sample dimension).
-            graph: sprs.csr_matrix
-                The full adjacency matrix of the graph to split on.
-                The nodes correspond to the samples in the data.
-            current_data: np.ndarray
-                Indices of the data to split.
-            total_deg_vector: np.ndarray
-                A vector of degrees for the nodes in the graph, (pre-)computed on the full graph.
-
-        Returns:
-            tuple[float, int, float]
-                The best normalized cut (TODO: is that how we called that?) value achieved, and the corresponding coordinate and threshold.
-        """
         best_cond, best_index, best_threshold = np.inf, 0, -np.inf 
         if current_data.size < 3:
             # There is a very gentle point where I assume there are at least samples
@@ -135,29 +102,4 @@ class GraphBased(_Base_ExplainableTree, GraphMixin):
 
             heapq.heappush(heap, CutComp(l_train_metric, cut_left, left_data))
             heapq.heappush(heap, CutComp(r_train_metric, cut_right, right_data))
-
-class _Base_GraphMode(ABC):
-    @abstractmethod    
-    def get_metric(self, graph: sprs.csr_matrix, data_ordering: np.ndarray, total_deg_vector: np.ndarray) -> np.ndarray:
-        """
-        Computes the normalized cut (TODO: is that how we called that?) value for each data point.
-
-        Args:
-            graph: sprs.csr_matrix
-                The full adjacency matrix of the graph.
-            data_ordering: np.ndarray
-                The indices of the nodes in the subgraph.
-            total_deg_vector: np.ndarray
-                A vector of degrees for the nodes in the graph, (pre-)computed on the full graph.
-        """
-        pass
-
-    @abstractmethod
-    def train_metric(self, cond: float, graph: sprs.csr_matrix, current_data: np.ndarray) -> float:
-        """
-        Computes the change in the k-way cut (TODO: is that how we called that?) given that we follow through the split.
-
-        TODO: ???????????????????????
-        """
-        pass
     
