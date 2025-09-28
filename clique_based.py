@@ -90,7 +90,7 @@ class CliqueBased(_Base_ExplainableTree, RefMixin, GraphMixin):
         if k is None:
             k = global_counts.size
 
-        current_data = np.arange(data.shape[0])
+        current_data = np.arange(data.shape[0], dtype=clustering.dtype)
         heap = []
 
         clustering = clustering.astype(np.int64)
