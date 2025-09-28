@@ -1,13 +1,18 @@
 from sentence_transformers import SentenceTransformer
 from sklearn.datasets import fetch_20newsgroups
-from ucimlrepo import fetch_ucirepo
 from sklearn.preprocessing import LabelEncoder
+from ucimlrepo import fetch_ucirepo
 from scipy.io import arff
+import numpy as np
 
 import os
-import clip
+try:
+    import clip
+except ImportError: 
+    enable_clip = False
+else:
+    enable_clip = True
 import torch
-import numpy as np
 
 from torch.utils.data import DataLoader, Subset
 from torchvision.datasets import CIFAR10, MNIST, ImageFolder
@@ -182,28 +187,38 @@ def get_ecoli(path_to_arff):
     _clustering_true = indices[valid]
 
     return _data, _clustering_true
-
+    
 def load_by_name(dataset_name, path = None):
+    dataset_name = dataset_name.lower()
     if dataset_name == '20newsgroups':
         return get_20newsgroups()
     elif dataset_name == 'cifar10':
+        if not enable_clip:
+            raise ValueError("CLIP is required for CIFAR10. Please install CLIP from the OpenAI repository (https://github.com/openai/CLIP).")
         return get_cifar10()
     elif dataset_name == 'mnist':
+        if not enable_clip:
+            raise ValueError("CLIP is required for MNIST. Please install CLIP from the OpenAI repository (https://github.com/openai/CLIP).")
         return get_mnist()
+    elif dataset_name == 'caltech':
+        assert path is not None, "Path to Caltech dataset is required"
+        if not enable_clip:
+            raise ValueError("CLIP is required for Caltech. Please install CLIP from the OpenAI repository (https://github.com/openai/CLIP).")
+        return get_caltech(path)
     elif dataset_name == 'beans':
         return get_beans()
     elif dataset_name == 'wisconsin':
         return get_wisconsin()
     elif dataset_name == 'iris':
         return get_iris()
-    elif dataset_name == 'pathbased_and_r15':
-        assert path is not None, "Path to ARFF file is required for pathbased_and_r15"
+    elif dataset_name == 'pathbased':
+        assert path is not None, "Path to Pathbased dataset is required"
+        return get_pathbased_and_r15(path)
+    elif dataset_name == 'r15':
+        assert path is not None, "Path to R15 dataset is required"
         return get_pathbased_and_r15(path)
     elif dataset_name == 'ecoli':
-        assert path is not None, "Path to ARFF file is required for ecoli"
+        assert path is not None, "Path to Ecoli dataset is required"
         return get_ecoli(path)
-    elif dataset_name == 'caltech':
-        assert path is not None, "Path to Caltech dataset is required"
-        return get_caltech(path)
     else:
         raise ValueError(f"Invalid dataset name: {dataset_name}")
