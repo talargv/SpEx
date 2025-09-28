@@ -88,7 +88,7 @@ Note that some of the datasets used in the paper require a local copy of the dat
 
 ### ExKMC 
 
-The ExKMC code is available at the paper's [official repository](https://github.com/navefr/ExKMC). The original download instructions did not directly work for us. To use the ExKMC repository, clone it and run: 
+The ExKMC code is available at the paper's [official repository](https://github.com/navefr/ExKMC). If you run with installation issues, clone the repository and run:
 
 `python path/to/repository/setup.py build_ext --inplace --cython`
 
