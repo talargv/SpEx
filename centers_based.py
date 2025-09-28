@@ -91,7 +91,7 @@ class CentersBased(_Base_ExplainableTree, RefMixin):
                 The full centers of the clusters.
                 Dimensions should be (num centers, sample dimension).
         """
-        current_data, current_centers =  np.arange(data.shape[0]), np.arange(centers.shape[0])
+        current_data, current_centers =  np.arange(data.shape[0], dtype=clustering.dtype), np.arange(centers.shape[0], dtype=clustering.dtype)
         queue = []
 
         _, best_index, best_threshold = self.single_partition(data, clustering, centers, current_data, current_centers)
