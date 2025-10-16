@@ -1,6 +1,6 @@
 # SpEx
 
-This is the official repository for the paper SpEx: A Spectral Approach to Explainable Clustering, accepted to NeurIPS 2025 as a poster.
+This is the official repository for the paper SpEx: A Spectral Approach to Explainable Clustering, accepted to NeurIPS 2025.
 
 This repository provides implementations for our main algorithm - SpEx, for general reference graphs, with an efficient implementation for the special case of a clique graph (the edge set is the set of cliques of equally-labeled data points, as set by a reference clustering), alongside IMM, EMN and an adapted version of CART discussed in the paper. 
 
