@@ -92,4 +92,4 @@ Note that some of the datasets used in the paper require a local copy of the dat
 
 ### Kernel IMM
 
-This repository contains code from the [Kernel IMM paper](https://openreview.net/forum?id=FAGtjl7HOw&noteId=ojbtGqOTg8), in the "kimm" folder and in the main notebook.
+The main experiment contains an optional comparison with [Kernel IMM](https://openreview.net/forum?id=FAGtjl7HOw&noteId=ojbtGqOTg8). Code is available in the paper.
